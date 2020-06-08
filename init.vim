@@ -13,6 +13,9 @@ Plug 'chuling/vim-equinusocio-material'
 Plug 'chrisbra/Colorizer'
 Plug 'tsiemens/vim-aftercolors'
 
+" Highlight yanked text
+Plug 'justinmk/vim-highlightedyank'
+
 " git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
