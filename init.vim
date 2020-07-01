@@ -13,9 +13,6 @@ Plug 'chuling/vim-equinusocio-material'
 Plug 'chrisbra/Colorizer'
 Plug 'tsiemens/vim-aftercolors'
 
-" Highlight yanked text
-Plug 'justinmk/vim-highlightedyank'
-
 " git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -77,6 +74,9 @@ set cindent
 set hlsearch
 set incsearch
 set ignorecase
+
+" Multi-replace
+set inccommand=nosplit
 
 " Undo
 set undodir=~/.config/nvim/undodir
@@ -214,6 +214,12 @@ function! SwitchSourceHeader()
     endif
 endfunction
 
+" Highlight yanked text
+augroup LuaHighlight
+    autocmd!
+    autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank()
+augroup END
+
 " Reset blinking mode when leaving
 au VimLeave * set guicursor=a:block-blinkon1
 au VimSuspend * set guicursor=a:block-blinkon1
@@ -237,6 +243,8 @@ let g:diagnostic_auto_popup_while_jump = 1
 let g:diagnostic_insert_delay = 1
 let g:diagnostic_virtual_text_prefix = ' '
 
+set omnifunc=v:lua.vim.lsp.omnifunc
+
 " Use neovim lsp ccls
 lua << EOF
 
@@ -245,7 +253,6 @@ local nvim_lsp = require('nvim_lsp')
 local on_attach = function(_, bufnr)
   require'completion'.on_attach()
   require'diagnostic'.on_attach()
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 end
 
 nvim_lsp.ccls.setup { on_attach = on_attach }
