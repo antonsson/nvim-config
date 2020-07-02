@@ -122,6 +122,9 @@ autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red
 autocmd InsertEnter * match ExtraWhiteSpace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhiteSpace /\s\+$/
 
+" Highlight yanked text
+au TextYankPost * silent! lua require'vim.highlight'.on_yank()
+
 " Lightline
 set noshowmode
 let g:lightline = {
@@ -170,18 +173,20 @@ nnoremap <silent> <leader>j :GFiles <CR>
 nnoremap <silent> <leader>t :Tags <CR>
 
 " Quickfix/location
-nnoremap qo :copen<CR>
-nnoremap qc :cclose<CR>
-nnoremap Lo :lopen<CR>
-nnoremap Lc :lclose<CR>
+nnoremap <leader>qo :copen<CR>
+nnoremap <leader>qc :cclose<CR>
+nnoremap <leader>lo :lopen<CR>
+nnoremap <leader>lc :lclose<CR>
 
 " Diagnostics
-nnoremap qn :NextDiagnosticCycle<CR>
-nnoremap qp :PrevDiagnosticCycle<CR>
+nnoremap <leader>qn :NextDiagnosticCycle<CR>
+nnoremap <leader>qp :PrevDiagnosticCycle<CR>
 
 " override default f instead of s
 map f <Plug>Sneak_s
 map F <Plug>Sneak_S
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
 
 " Format file
 nnoremap <leader>cf :Neoformat<CR>
@@ -229,9 +234,6 @@ au VimResume * set guicursor=a:block-blinkon0
 let $FZF_DEFAULT_OPTS='--layout=reverse --margin=1,3'
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 
-" Use completion-nvim in every buffer
-autocmd BufEnter * lua require'completion'.on_attach()
-
 " For nvim-completion
 let g:completion_enable_auto_popup = 1
 let g:completion_auto_change_source = 1
@@ -243,39 +245,23 @@ let g:diagnostic_auto_popup_while_jump = 1
 let g:diagnostic_insert_delay = 1
 let g:diagnostic_virtual_text_prefix = ' '
 
+" Always set lsp as omnifunc
 set omnifunc=v:lua.vim.lsp.omnifunc
+autocmd BufEnter * lua require'completion'.on_attach()
 
-" Use neovim lsp ccls
+" Load Custom Modules:
 lua << EOF
-
-local nvim_lsp = require('nvim_lsp')
-
-local on_attach = function(_, bufnr)
-  require'completion'.on_attach()
-  require'diagnostic'.on_attach()
-end
-
-nvim_lsp.ccls.setup { on_attach = on_attach }
-nvim_lsp.pyls.setup { on_attach = on_attach }
-nvim_lsp.texlab.setup { on_attach = on_attach }
-nvim_lsp.jsonls.setup { on_attach = on_attach }
-nvim_lsp.html.setup { on_attach = on_attach }
-nvim_lsp.bashls.setup { on_attach = on_attach }
-nvim_lsp.tsserver.setup {
-    on_attach = on_attach,
-    settings = {cmd = { "typescript-language-server", "--stdio" }}
-}
-nvim_lsp.vimls.setup { on_attach = on_attach }
-
+require('init')
 EOF
 
-nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> gD    <cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> gi    <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+nnoremap <silent> gw    <cmd>lua vim.lsp.buf.workspace_symbol()<CR><c-r><c-w><CR>
 nnoremap <silent> gF    <cmd>lua vim.lsp.buf.formatting()<CR>
