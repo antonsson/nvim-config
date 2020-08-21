@@ -10,12 +10,14 @@ Plug 'itchyny/lightline.vim'
 
 " Color scheme and highlighter
 Plug 'chuling/vim-equinusocio-material'
-Plug 'chrisbra/Colorizer'
+Plug 'norcalli/nvim-colorizer.lua'
 Plug 'tsiemens/vim-aftercolors'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 " git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'rhysd/git-messenger.vim'
 
 " Fuzzy search
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -23,9 +25,6 @@ Plug 'junegunn/fzf.vim'
 
 " Comment lines
 Plug 'tpope/vim-commentary'
-
-" C/CPP
-Plug 'octol/vim-cpp-enhanced-highlight'
 
 " Syntax
 Plug 'dart-lang/dart-vim-plugin'
@@ -47,7 +46,7 @@ if (has("termguicolors"))
  set termguicolors
 endif
 
-let g:equinusocio_material_darker = 1
+let g:equinusocio_material_style = 'darker'
 colorscheme equinusocio_material
 
 let mapleader = ','
@@ -63,6 +62,7 @@ set ruler
 set scrolloff=4
 set conceallevel=0
 set textwidth=100
+set fillchars+=vert:│
 
 " Indentation
 set tabstop=4
@@ -122,8 +122,14 @@ autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red
 autocmd InsertEnter * match ExtraWhiteSpace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhiteSpace /\s\+$/
 
+" Colorizer setup
+lua require'colorizer'.setup()
+
 " Highlight yanked text
 au TextYankPost * silent! lua require'vim.highlight'.on_yank()
+
+" Prioritize eslint-formatter for javascript
+let g:neoformat_enabled_javascript = ['prettiereslint', 'js-beautify', 'clang-format']
 
 " Lightline
 set noshowmode
