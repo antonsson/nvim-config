@@ -1,12 +1,12 @@
 filetype off
 
-call plug#begin('~/.config/nvim/plugged')
-
-" Better motion
-Plug 'justinmk/vim-sneak'
+call plug#begin(stdpath('data') . '/plugged')
 
 " Pimped status line
 Plug 'itchyny/lightline.vim'
+
+" Toggle quick/location list
+Plug 'milkypostman/vim-togglelist'
 
 " Color scheme and highlighter
 Plug 'chuling/vim-equinusocio-material'
@@ -179,20 +179,13 @@ nnoremap <silent> <leader>j :GFiles <CR>
 nnoremap <silent> <leader>t :Tags <CR>
 
 " Quickfix/location
-nnoremap <leader>qo :copen<CR>
-nnoremap <leader>qc :cclose<CR>
-nnoremap <leader>lo :lopen<CR>
-nnoremap <leader>lc :lclose<CR>
+nmap <script> <silent> <leader>l :call ToggleLocationList()<CR>
+nmap <script> <silent> <leader>q :call ToggleQuickfixList()<CR>
 
 " Diagnostics
-nnoremap <leader>qn :NextDiagnosticCycle<CR>
-nnoremap <leader>qp :PrevDiagnosticCycle<CR>
-
-" override default f instead of s
-map f <Plug>Sneak_s
-map F <Plug>Sneak_S
-map t <Plug>Sneak_t
-map T <Plug>Sneak_T
+nnoremap <leader>n :NegitxtDiagnosticCycle<CR>
+nnoremap <leader>p :PrevDiagnosticCycle<CR>
+nnoremap <leader>i :lua vim.lsp.util.show_line_diagnostics()<CR>
 
 " Format file
 nnoremap <leader>cf :Neoformat<CR>
@@ -243,13 +236,22 @@ let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 " For nvim-completion
 let g:completion_enable_auto_popup = 1
 let g:completion_auto_change_source = 1
+let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+let g:completion_trigger_keyword_length = 2
+let g:completion_chain_complete_list = [
+    \{'complete_items': ['lsp', 'path']},
+    \{'mode': '<c-p>'},
+    \{'mode': '<c-n>'}
+\]
 
 " Neovim LSP Diagnostics
-let g:diagnostic_enable_virtual_text = 1
-let g:diagnostic_show_sign = 1
-let g:diagnostic_auto_popup_while_jump = 1
+let g:diagnostic_enable_virtual_text = 0
 let g:diagnostic_insert_delay = 1
 let g:diagnostic_virtual_text_prefix = ' '
+call sign_define("LspDiagnosticsErrorSign", {"text" : "", "texthl" : "LspDiagnosticsError"})
+call sign_define("LspDiagnosticsWarningSign", {"text" : "", "texthl" : "LspDiagnosticsWarning"})
+call sign_define("LspDiagnosticsInformationSign", {"text" : "", "texthl" : "LspDiagnosticsInformation"})
+call sign_define("LspDiagnosticsHintSign", {"text" : "", "texthl" : "LspDiagnosticsHint"})
 
 " Always set lsp as omnifunc
 set omnifunc=v:lua.vim.lsp.omnifunc
