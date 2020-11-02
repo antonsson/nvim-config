@@ -253,8 +253,10 @@ call sign_define("LspDiagnosticsInformationSign", {"text" : "", "texthl" : "L
 call sign_define("LspDiagnosticsHintSign", {"text" : "", "texthl" : "LspDiagnosticsHint"})
 
 " Always set lsp as omnifunc
-set omnifunc=v:lua.vim.lsp.omnifunc
-autocmd BufEnter * lua require'completion'.on_attach()
+if exists("loaded_completion")
+    set omnifunc=v:lua.vim.lsp.omnifunc
+    autocmd BufEnter * lua require'completion'.on_attach()
+endif
 
 " Load Custom Modules
 lua << EOF
