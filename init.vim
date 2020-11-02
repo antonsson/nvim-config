@@ -15,16 +15,11 @@ Plug 'milkypostman/vim-togglelist'
 Plug 'chuling/vim-equinusocio-material'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'tsiemens/vim-aftercolors'
-Plug 'jackguo380/vim-lsp-cxx-highlight'
+Plug 'nvim-treesitter/nvim-treesitter'
 
 " git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
-Plug 'rhysd/git-messenger.vim'
-
-" Fuzzy search
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 
 " Comment lines
 Plug 'tpope/vim-commentary'
@@ -34,11 +29,17 @@ Plug 'dart-lang/dart-vim-plugin'
 Plug 'udalov/kotlin-vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'gburca/vim-logcat'
+Plug 'keith/swift.vim'
 
 " Neovim bultin lsp
 Plug 'neovim/nvim-lsp'
 Plug 'haorenW1025/completion-nvim'
 Plug 'haorenW1025/diagnostic-nvim'
+
+" Telescope
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-lua/telescope.nvim'
 
 " Format multiple file types
 Plug 'sbdchd/neoformat'
@@ -231,10 +232,6 @@ au VimLeave * set guicursor=a:block-blinkon1
 au VimSuspend * set guicursor=a:block-blinkon1
 au VimResume * set guicursor=a:block-blinkon0
 
-" Floating FZF
-let $FZF_DEFAULT_OPTS='--layout=reverse --margin=1,3'
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
-
 " For nvim-completion
 let g:completion_enable_auto_popup = 1
 let g:completion_auto_change_source = 1
@@ -259,19 +256,23 @@ call sign_define("LspDiagnosticsHintSign", {"text" : "", "texthl" : "LspDiagn
 set omnifunc=v:lua.vim.lsp.omnifunc
 autocmd BufEnter * lua require'completion'.on_attach()
 
-" Load Custom Modules:
+" Load Custom Modules
 lua << EOF
 require('init')
 EOF
 
+" Nvim LSP mappings
 nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gD    <cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gi    <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
-nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-nnoremap <silent> gw    <cmd>lua vim.lsp.buf.workspace_symbol()<CR><c-r><c-w><CR>
-nnoremap <silent> gF    <cmd>lua vim.lsp.buf.formatting()<CR>
+
+" Telescope mappings
+nnoremap <leader>f :lua require'telescope.builtin'.find_files{}<cr>
+nnoremap <leader>j :lua require'telescope.builtin'.git_files{}<cr>
+nnoremap <leader>g :lua require'telescope.builtin'.live_grep{}<cr>
+nnoremap <leader>b :lua require'telescope.builtin'.buffers{}<cr>
+nnoremap <leader>r :lua require'telescope.builtin'.lsp_references{}<cr>
+nnoremap <leader>w :lua require'telescope.builtin'.lsp_workspace_symbols{}<cr>
