@@ -2,6 +2,9 @@ filetype off
 
 call plug#begin(stdpath('data') . '/plugged')
 
+" Turn off highlight search when done
+Plug 'romainl/vim-cool'
+
 " Pimped status line
 Plug 'itchyny/lightline.vim'
 
@@ -168,22 +171,17 @@ nmap j gj
 nmap k gk
 nmap <c-j> :tjump 
 nmap <c-h> :call SwitchSourceHeader() <CR>
+nmap <F3> :e ~/.config/nvim/lua/init.lua <CR>
 nmap <F4> :e ~/.config/nvim/init.vim <CR>
 nmap <F12> :tjump <C-R><C-W> <CR>
 nmap <F12> :tjump <C-R><C-W> <CR>
-
-" Fzf.vim
-nnoremap <silent> <leader>f :Files <CR>
-nnoremap <silent> <leader>b :Buffers <CR>
-nnoremap <silent> <leader>j :GFiles <CR>
-nnoremap <silent> <leader>t :Tags <CR>
 
 " Quickfix/location
 nmap <script> <silent> <leader>l :call ToggleLocationList()<CR>
 nmap <script> <silent> <leader>q :call ToggleQuickfixList()<CR>
 
 " Diagnostics
-nnoremap <leader>n :NegitxtDiagnosticCycle<CR>
+nnoremap <leader>n :NextDiagnosticCycle<CR>
 nnoremap <leader>p :PrevDiagnosticCycle<CR>
 nnoremap <leader>i :lua vim.lsp.util.show_line_diagnostics()<CR>
 
@@ -198,6 +196,10 @@ nmap <C-F8> :!ctags -R --language-force=java --extras=+f --exclude=*.class .<CR>
 " Change between indentation settings
 nmap <F9> :set tabstop=4<CR>:set shiftwidth=4<CR>:set expandtab<CR>:set cinoptions=<CR>
 nmap <F10> :set tabstop=2<CR>:set shiftwidth=2<CR>:set expandtab<CR>:set cinoptions=<CR>
+
+" For easier searching
+nnoremap - /
+nnoremap _ ?
 
 " Magically fold from search result
 nnoremap \z :setlocal foldexpr=(getline(v:lnum)=~@/)?0:(getline(v:lnum-1)=~@/)\\|\\|(getline(v:lnum+1)=~@/)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>
