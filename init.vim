@@ -233,30 +233,16 @@ au VimSuspend * set guicursor=a:block-blinkon1
 au VimResume * set guicursor=a:block-blinkon0
 
 " For nvim-completion
-let g:completion_enable_auto_popup = 1
-let g:completion_auto_change_source = 1
-let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-let g:completion_trigger_keyword_length = 2
-let g:completion_chain_complete_list = [
-    \{'complete_items': ['lsp', 'path']},
-    \{'mode': '<c-p>'},
-    \{'mode': '<c-n>'}
-\]
-
-" Neovim LSP Diagnostics
-let g:diagnostic_enable_virtual_text = 0
-let g:diagnostic_insert_delay = 1
-let g:diagnostic_virtual_text_prefix = ' '
-call sign_define("LspDiagnosticsErrorSign", {"text" : "", "texthl" : "LspDiagnosticsError"})
-call sign_define("LspDiagnosticsWarningSign", {"text" : "", "texthl" : "LspDiagnosticsWarning"})
-call sign_define("LspDiagnosticsInformationSign", {"text" : "", "texthl" : "LspDiagnosticsInformation"})
-call sign_define("LspDiagnosticsHintSign", {"text" : "", "texthl" : "LspDiagnosticsHint"})
+imap <c-j> <Plug>(completion_next_source)
+imap <c-k> <Plug>(completion_prev_source)
+call sign_define("LspDiagnosticsErrorSign", {"text" : "x", "texthl" : "LspDiagnosticsError"})
+call sign_define("LspDiagnosticsWarningSign", {"text" : "w", "texthl" : "LspDiagnosticsWarning"})
+call sign_define("LspDiagnosticsInformationSign", {"text" : "i", "texthl" : "LspDiagnosticsInformation"})
+call sign_define("LspDiagnosticsHintSign", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
 
 " Always set lsp as omnifunc
-if exists("loaded_completion")
-    set omnifunc=v:lua.vim.lsp.omnifunc
-    autocmd BufEnter * lua require'completion'.on_attach()
-endif
+set omnifunc=v:lua.vim.lsp.omnifunc
+autocmd BufEnter * lua require'completion'.on_attach()
 
 " Load Custom Modules
 lua << EOF

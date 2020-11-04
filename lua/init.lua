@@ -4,9 +4,23 @@ local map = function(type, key, value)
     vim.fn.nvim_buf_set_keymap(0, type, key, value, {noremap = true, silent = true})
 end
 
-local on_attach = function(_, bufnr)
-    require "completion".on_attach()
-    require "diagnostic".on_attach()
+local on_attach = function()
+    require "completion".on_attach({
+        enable_auto_popup = 1,
+        auto_change_source = 1,
+        matching_strategy_list = {'exact', 'substring', 'fuzzy'},
+        trigger_keyword_length = 2,
+        chain_complete_list = {
+            {complete_items = {'path'}, triggered_only = {'/'}},
+            {complete_items = {'lsp'}},
+            {mode = 'line'},
+        },
+    })
+    require "diagnostic".on_attach({
+        enable_virtual_text = 0,
+        insert_delay = 1,
+        virtual_text_prefix = 'x',
+    })
 end
 
 nvim_lsp.ccls.setup {
@@ -18,6 +32,7 @@ nvim_lsp.ccls.setup {
     }
 }
 
+nvim_lsp.sumneko_lua.setup {on_attach = on_attach}
 nvim_lsp.pyls.setup {on_attach = on_attach}
 nvim_lsp.texlab.setup {on_attach = on_attach}
 nvim_lsp.jsonls.setup {on_attach = on_attach}
