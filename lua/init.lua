@@ -23,16 +23,17 @@ local on_attach = function()
     })
 end
 
-nvim_lsp.ccls.setup {
-    on_attach = on_attach,
-    init_options = {
-        highlight = {
-            lsRanges = true
-        }
-    }
-}
+-- nvim_lsp.ccls.setup {
+--     on_attach = on_attach,
+--     init_options = {
+--         highlight = {
+--             lsRanges = true
+--         }
+--     }
+-- }
 
 nvim_lsp.sumneko_lua.setup {on_attach = on_attach}
+nvim_lsp.clangd.setup {on_attach = on_attach}
 nvim_lsp.pyls.setup {on_attach = on_attach}
 nvim_lsp.texlab.setup {on_attach = on_attach}
 nvim_lsp.jsonls.setup {on_attach = on_attach}
@@ -53,8 +54,8 @@ require "nvim-treesitter.configs".setup {
     ensure_installed = "maintained",
     highlight = {
         enable = true,
-        disable = {} -- list of language that will be disabled
-    },
+        disable = {"c", "cpp", "python"} -- list of language that will be disabled
+    }
 }
 
 require "telescope".setup {
@@ -73,6 +74,15 @@ require "telescope".setup {
             prompt = {"─", "│", " ", "│", "╭", "╮", "│", "│"},
             results = {"─", "│", "─", "│", "├", "┤", "╯", "╰"},
             preview = {"─", "│", "─", "│", "╭", "╮", "╯", "╰"}
+        },
+        vimgrep_arguments = {
+            "rg",
+            "--color=never",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--no-ignore-vcs"
         }
     }
 }

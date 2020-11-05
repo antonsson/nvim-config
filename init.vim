@@ -12,10 +12,13 @@ Plug 'itchyny/lightline.vim'
 Plug 'milkypostman/vim-togglelist'
 
 " Color scheme and highlighter
+Plug 'sainnhe/sonokai'
+Plug 'joshdick/onedark.vim'
 Plug 'chuling/vim-equinusocio-material'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'tsiemens/vim-aftercolors'
 Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'bfrg/vim-cpp-modern'
 
 " git
 Plug 'airblade/vim-gitgutter'
@@ -36,6 +39,10 @@ Plug 'neovim/nvim-lsp'
 Plug 'haorenW1025/completion-nvim'
 Plug 'haorenW1025/diagnostic-nvim'
 
+" Fuzzy search
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
 " Telescope
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
@@ -51,7 +58,14 @@ if (has("termguicolors"))
 endif
 
 let g:equinusocio_material_style = 'darker'
-colorscheme equinusocio_material
+"colorscheme equinusocio_material
+
+let g:sonokai_style = 'andromeda'
+let g:sonokai_transparent_background = 1
+"colorscheme sonokai
+
+let g:onedark_color_overrides = { "black": {"gui": "#181818", "cterm": "235", "cterm16": "0" } }
+colorscheme onedark
 
 let mapleader = ','
 syntax on
@@ -135,10 +149,20 @@ au TextYankPost * silent! lua require'vim.highlight'.on_yank()
 " Prioritize eslint-formatter for javascript
 let g:neoformat_enabled_javascript = ['prettiereslint', 'js-beautify', 'clang-format']
 
+" FZF
+let $FZF_DEFAULT_OPTS='--layout=reverse --margin=1,3'
+let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
+let g:fzf_preview_window = ['up:40%', 'ctrl-/']
+nnoremap <silent> <leader>f :Files <cr>
+nnoremap <silent> <leader>b :Buffers <cr>
+nnoremap <silent> <leader>j :GFiles <cr>
+nnoremap <silent> <leader>g :Rg <cr>
+nnoremap <silent> <leader>G :Rg <c-r><c-w><cr>
+
 " Lightline
 set noshowmode
 let g:lightline = {
-      \ 'colorscheme': 'equinusocio_material',
+      \ 'colorscheme': 'onedark',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
@@ -171,7 +195,7 @@ nmap . .`[
 nmap j gj
 nmap k gk
 nmap <c-j> :tjump 
-nmap <c-h> :call SwitchSourceHeader() <CR>
+nmap <c-h> :ClangdSwitchSourceHeader <CR>
 nmap <F3> :e ~/.config/nvim/lua/init.lua <CR>
 nmap <F4> :e ~/.config/nvim/init.vim <CR>
 nmap <F12> :tjump <C-R><C-W> <CR>
@@ -258,9 +282,5 @@ nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
 
 " Telescope mappings
-nnoremap <leader>f :lua require'telescope.builtin'.find_files{}<cr>
-nnoremap <leader>j :lua require'telescope.builtin'.git_files{}<cr>
-nnoremap <leader>g :lua require'telescope.builtin'.live_grep{}<cr>
-nnoremap <leader>b :lua require'telescope.builtin'.buffers{}<cr>
 nnoremap <leader>r :lua require'telescope.builtin'.lsp_references{}<cr>
 nnoremap <leader>w :lua require'telescope.builtin'.lsp_workspace_symbols{}<cr>
