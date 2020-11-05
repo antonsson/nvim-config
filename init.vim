@@ -51,6 +51,9 @@ Plug 'nvim-lua/telescope.nvim'
 " Format multiple file types
 Plug 'sbdchd/neoformat'
 
+" Editor config
+Plug 'editorconfig/editorconfig-vim'
+
 call plug#end()
 
 if (has("termguicolors"))
