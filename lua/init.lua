@@ -1,26 +1,50 @@
 local nvim_lsp = require("nvim_lsp")
 
 local map = function(type, key, value)
-    vim.fn.nvim_buf_set_keymap(0, type, key, value, {noremap = true, silent = true})
+    vim.api.nvim_buf_set_keymap(0, type, key, value, {noremap = true, silent = true})
 end
 
-local on_attach = function()
-    require "completion".on_attach({
-        enable_auto_popup = 1,
-        auto_change_source = 1,
-        matching_strategy_list = {'exact', 'substring', 'fuzzy'},
-        trigger_keyword_length = 2,
-        chain_complete_list = {
-            {complete_items = {'path'}, triggered_only = {'/'}},
-            {complete_items = {'lsp'}},
-            {mode = 'line'},
-        },
-    })
-    require "diagnostic".on_attach({
-        enable_virtual_text = 0,
-        insert_delay = 1,
-        virtual_text_prefix = 'x',
-    })
+vim.api.nvim_set_keymap('n', '<leader><Space>', ':set hlsearch!<cr>', { noremap = true, silent = true })
+-- :nnoremap <silent> <leader><Space> :set hlsearch<cr>
+
+local init = {}
+
+local on_attach_lsp = function()
+    print("LSP started")
+    require "completion".on_attach(
+        {
+            enable_auto_popup = 1,
+            auto_change_source = 1,
+            matching_strategy_list = {"exact", "substring", "fuzzy"},
+            trigger_keyword_length = 2,
+            chain_complete_list = {
+                json = {
+                    {complete_items = {"path"}, triggered_only = {"/"}},
+                },
+                default = {
+                    {complete_items = {"path"}, triggered_only = {"/"}},
+                    {complete_items = {"lsp"}},
+                    {mode = "line"},
+                    {mode = "<c-n>"},
+                    {mode = "<c-p>"}
+                }
+            }
+        }
+    )
+    require "diagnostic".on_attach(
+        {
+            enable_virtual_text = 0,
+            insert_delay = 1,
+            virtual_text_prefix = "x"
+        }
+    )
+
+    map("n", "gd", ":lua vim.lsp.buf.definition()<cr>")
+    map("n", "gD", ":lua vim.lsp.buf.declaration()<cr>")
+    map("n", "K", ":lua vim.lsp.buf.hover()<cr>")
+    map("n", "gi", ":lua vim.lsp.buf.implementation()<cr>")
+    map("n", "<c-k>", ":lua vim.lsp.buf.signature_help()<cr>")
+    map("n", "1gD", ":lua vim.lsp.buf.type_definition()<cr>")
 end
 
 -- nvim_lsp.ccls.setup {
@@ -32,23 +56,20 @@ end
 --     }
 -- }
 
-nvim_lsp.sumneko_lua.setup {on_attach = on_attach}
-nvim_lsp.clangd.setup {on_attach = on_attach}
-nvim_lsp.pyls.setup {on_attach = on_attach}
-nvim_lsp.texlab.setup {on_attach = on_attach}
-nvim_lsp.jsonls.setup {on_attach = on_attach}
-nvim_lsp.html.setup {on_attach = on_attach}
-nvim_lsp.bashls.setup {on_attach = on_attach}
+nvim_lsp.sumneko_lua.setup { on_attach = on_attach_lsp }
+nvim_lsp.clangd.setup {on_attach = on_attach_lsp}
+nvim_lsp.pyls.setup {on_attach = on_attach_lsp}
+nvim_lsp.texlab.setup {on_attach = on_attach_lsp}
+nvim_lsp.jsonls.setup {on_attach = on_attach_lsp}
+nvim_lsp.html.setup {on_attach = on_attach_lsp}
+nvim_lsp.bashls.setup {on_attach = on_attach_lsp}
 nvim_lsp.kotlin_language_server.setup {
-    on_attach = on_attach,
+    on_attach = on_attach_lsp,
     cmd = {"/home/anton/programs/kotlin-lsp-server/bin/kotlin-language-server"},
     root_dir = nvim_lsp.util.root_pattern("settings.gradle.kts")
 }
-nvim_lsp.tsserver.setup {
-    on_attach = on_attach,
-    settings = {cmd = {"typescript-language-server", "--stdio"}}
-}
-nvim_lsp.vimls.setup {on_attach = on_attach}
+nvim_lsp.tsserver.setup { on_attach = on_attach_lsp }
+nvim_lsp.vimls.setup {on_attach = on_attach_lsp}
 
 require "nvim-treesitter.configs".setup {
     ensure_installed = "maintained",
@@ -75,14 +96,13 @@ require "telescope".setup {
             results = {"─", "│", "─", "│", "├", "┤", "╯", "╰"},
             preview = {"─", "│", "─", "│", "╭", "╮", "╯", "╰"}
         },
-        vimgrep_arguments = {
-            "rg",
-            "--color=never",
-            "--no-heading",
-            "--with-filename",
-            "--line-number",
-            "--column",
-            "--no-ignore-vcs"
-        }
     }
 }
+map("n", "<leader>r", ":lua require'telescope.builtin'.lsp_references{}<cr>")
+map("n", "<leader>w", ":lua require'telescope.builtin'.lsp_workspace_symbols{}<cr>")
+
+function init.attach_lsp()
+    on_attach_lsp()
+end
+
+return init

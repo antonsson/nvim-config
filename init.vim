@@ -259,31 +259,17 @@ au VimLeave * set guicursor=a:block-blinkon1
 au VimSuspend * set guicursor=a:block-blinkon1
 au VimResume * set guicursor=a:block-blinkon0
 
-" For nvim-completion
-imap <c-j> <Plug>(completion_next_source)
-imap <c-k> <Plug>(completion_prev_source)
+" For nvim-diagnostics
 call sign_define("LspDiagnosticsErrorSign", {"text" : "x", "texthl" : "LspDiagnosticsError"})
 call sign_define("LspDiagnosticsWarningSign", {"text" : "w", "texthl" : "LspDiagnosticsWarning"})
 call sign_define("LspDiagnosticsInformationSign", {"text" : "i", "texthl" : "LspDiagnosticsInformation"})
 call sign_define("LspDiagnosticsHintSign", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
 
 " Always set lsp as omnifunc
-set omnifunc=v:lua.vim.lsp.omnifunc
-autocmd BufEnter * lua require'completion'.on_attach()
+autocmd BufEnter * lua require('init').attach_lsp()
 
 " Load Custom Modules
 lua << EOF
 require('init')
 EOF
 
-" Nvim LSP mappings
-nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> gD    <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> gi    <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
-
-" Telescope mappings
-nnoremap <leader>r :lua require'telescope.builtin'.lsp_references{}<cr>
-nnoremap <leader>w :lua require'telescope.builtin'.lsp_workspace_symbols{}<cr>
