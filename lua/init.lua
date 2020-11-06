@@ -1,11 +1,8 @@
 local nvim_lsp = require("nvim_lsp")
 
 local map = function(type, key, value)
-    vim.api.nvim_buf_set_keymap(0, type, key, value, {noremap = true, silent = true})
+    vim.api.nvim_buf_set_keymap(0, type, key, value, {noremap = true, silent = false})
 end
-
-vim.api.nvim_set_keymap('n', '<leader><Space>', ':set hlsearch!<cr>', { noremap = true, silent = true })
--- :nnoremap <silent> <leader><Space> :set hlsearch<cr>
 
 local init = {}
 
@@ -19,7 +16,7 @@ local on_attach_lsp = function()
             trigger_keyword_length = 2,
             chain_complete_list = {
                 json = {
-                    {complete_items = {"path"}, triggered_only = {"/"}},
+                    {complete_items = {"path"}, triggered_only = {"/"}}
                 },
                 default = {
                     {complete_items = {"path"}, triggered_only = {"/"}},
@@ -41,6 +38,7 @@ local on_attach_lsp = function()
 
     map("n", "gd", ":lua vim.lsp.buf.definition()<cr>")
     map("n", "gD", ":lua vim.lsp.buf.declaration()<cr>")
+    map("n", "gw", ":lua vim.lsp.buf.workspace_symbol()<cr>")
     map("n", "K", ":lua vim.lsp.buf.hover()<cr>")
     map("n", "gi", ":lua vim.lsp.buf.implementation()<cr>")
     map("n", "<c-k>", ":lua vim.lsp.buf.signature_help()<cr>")
@@ -56,7 +54,7 @@ end
 --     }
 -- }
 
-nvim_lsp.sumneko_lua.setup { on_attach = on_attach_lsp }
+nvim_lsp.sumneko_lua.setup {on_attach = on_attach_lsp}
 nvim_lsp.clangd.setup {on_attach = on_attach_lsp}
 nvim_lsp.pyls.setup {on_attach = on_attach_lsp}
 nvim_lsp.texlab.setup {on_attach = on_attach_lsp}
@@ -68,7 +66,7 @@ nvim_lsp.kotlin_language_server.setup {
     cmd = {"/home/anton/programs/kotlin-lsp-server/bin/kotlin-language-server"},
     root_dir = nvim_lsp.util.root_pattern("settings.gradle.kts")
 }
-nvim_lsp.tsserver.setup { on_attach = on_attach_lsp }
+nvim_lsp.tsserver.setup {on_attach = on_attach_lsp}
 nvim_lsp.vimls.setup {on_attach = on_attach_lsp}
 
 require "nvim-treesitter.configs".setup {
@@ -95,14 +93,15 @@ require "telescope".setup {
             prompt = {"─", "│", " ", "│", "╭", "╮", "│", "│"},
             results = {"─", "│", "─", "│", "├", "┤", "╯", "╰"},
             preview = {"─", "│", "─", "│", "╭", "╮", "╯", "╰"}
-        },
+        }
     }
 }
-map("n", "<leader>r", ":lua require'telescope.builtin'.lsp_references{}<cr>")
-map("n", "<leader>w", ":lua require'telescope.builtin'.lsp_workspace_symbols{}<cr>")
 
 function init.attach_lsp()
     on_attach_lsp()
+    map("n", "<leader>r", ":lua require'telescope.builtin'.lsp_references{}<cr>")
+    map("n", "<leader>w", ":lua require'telescope.builtin'.lsp_workspace_symbols{ query = '*' }<cr>")
+    map("n", "<leader>d", ":lua require'telescope.builtin'.lsp_document_symbols{ query = 'main' }<cr>")
 end
 
 return init
