@@ -2,9 +2,6 @@ filetype off
 
 call plug#begin(stdpath('data') . '/plugged')
 
-" Turn off highlight search when done
-Plug 'romainl/vim-cool'
-
 " Pimped status line
 Plug 'itchyny/lightline.vim'
 
