@@ -1,4 +1,4 @@
-local nvim_lsp = require("nvim_lsp")
+local nvim_lsp = require("lspconfig")
 
 local map = function(type, key, value)
     vim.api.nvim_buf_set_keymap(0, type, key, value, {noremap = true, silent = false})
@@ -28,13 +28,6 @@ local on_attach_lsp = function()
             }
         }
     )
-    require "diagnostic".on_attach(
-        {
-            enable_virtual_text = 0,
-            insert_delay = 1,
-            virtual_text_prefix = "x"
-        }
-    )
 
     map("n", "gd", ":lua vim.lsp.buf.definition()<cr>")
     map("n", "gD", ":lua vim.lsp.buf.declaration()<cr>")
@@ -43,6 +36,9 @@ local on_attach_lsp = function()
     map("n", "gi", ":lua vim.lsp.buf.implementation()<cr>")
     map("n", "<c-k>", ":lua vim.lsp.buf.signature_help()<cr>")
     map("n", "1gD", ":lua vim.lsp.buf.type_definition()<cr>")
+    map("n", "<leader>n", ":lua vim.lsp.diagnostic.buf_move_next_diagnostic()<cr>")
+    map("n", "<leader>p", ":lua vim.lsp.diagnostic.buf_move_prev_diagnostic()<cr>")
+    map("n", "<leader>i", ":lua vim.lsp.diagnostic.show_line_diagnostics()<cr>")
 end
 
 -- nvim_lsp.ccls.setup {
@@ -103,5 +99,15 @@ function init.attach_lsp()
     map("n", "<leader>w", ":lua require'telescope.builtin'.lsp_workspace_symbols{ query = '*' }<cr>")
     map("n", "<leader>d", ":lua require'telescope.builtin'.lsp_document_symbols{ query = 'main' }<cr>")
 end
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] =
+    vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics,
+    {
+        virtual_text = false,
+        signs = true,
+        update_in_insert = false
+    }
+)
 
 return init

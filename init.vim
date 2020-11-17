@@ -33,8 +33,7 @@ Plug 'keith/swift.vim'
 
 " Neovim bultin lsp
 Plug 'neovim/nvim-lsp'
-Plug 'haorenW1025/completion-nvim'
-Plug 'haorenW1025/diagnostic-nvim'
+Plug 'nvim-lua/completion-nvim'
 
 " Fuzzy search
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -79,7 +78,6 @@ set smartcase
 set ruler
 set scrolloff=4
 set conceallevel=0
-set textwidth=100
 set fillchars+=vert:│
 
 " Indentation
@@ -194,33 +192,17 @@ xmap ä ]
 nmap . .`[
 nmap j gj
 nmap k gk
-nmap <c-j> :tjump 
 nmap <c-h> :ClangdSwitchSourceHeader <CR>
 nmap <F3> :e ~/.config/nvim/lua/init.lua <CR>
 nmap <F4> :e ~/.config/nvim/init.vim <CR>
-nmap <F12> :tjump <C-R><C-W> <CR>
-nmap <F12> :tjump <C-R><C-W> <CR>
 
 " Quickfix/location
 nmap <script> <silent> <leader>l :call ToggleLocationList()<CR>
 nmap <script> <silent> <leader>q :call ToggleQuickfixList()<CR>
 
-" Diagnostics
-nnoremap <leader>n :NextDiagnosticCycle<CR>
-nnoremap <leader>p :PrevDiagnosticCycle<CR>
-nnoremap <leader>i :lua vim.lsp.util.show_line_diagnostics()<CR>
-
 " Format file
 nnoremap <leader>cf :Neoformat<CR>
 vnoremap <leader>cf :Neoformat<CR>
-
-" Generate new ctags for project
-nmap <F8> :!ctags -R --c++-kinds=+p --fields=+ilaS --extras=+q+f .<CR>
-nmap <C-F8> :!ctags -R --language-force=java --extras=+f --exclude=*.class .<CR>
-
-" Change between indentation settings
-nmap <F9> :set tabstop=4<CR>:set shiftwidth=4<CR>:set expandtab<CR>:set cinoptions=<CR>
-nmap <F10> :set tabstop=2<CR>:set shiftwidth=2<CR>:set expandtab<CR>:set cinoptions=<CR>
 
 " For easier searching
 nnoremap - /
@@ -228,22 +210,6 @@ nnoremap _ ?
 
 " Magically fold from search result
 nnoremap \z :setlocal foldexpr=(getline(v:lnum)=~@/)?0:(getline(v:lnum-1)=~@/)\\|\\|(getline(v:lnum+1)=~@/)?1:2 foldmethod=expr foldlevel=0 foldcolumn=2<CR>
-
-"Added ! to overwrite on reload
-function! SwitchSourceHeader()
-    let extension = expand("%:e")
-    if extension ==? "cpp" || extension ==? "c"
-        let extension = ".h"
-    else
-        let extension = ".c"
-    endif
-    let file = expand("%:t:r").extension
-    if bufexists(bufname(file))
-        execute "buffer ".file
-    else
-        execute "tjump ".file
-    endif
-endfunction
 
 " Highlight yanked text
 augroup LuaHighlight
@@ -255,12 +221,6 @@ augroup END
 au VimLeave * set guicursor=a:block-blinkon1
 au VimSuspend * set guicursor=a:block-blinkon1
 au VimResume * set guicursor=a:block-blinkon0
-
-" For nvim-diagnostics
-call sign_define("LspDiagnosticsErrorSign", {"text" : "x", "texthl" : "LspDiagnosticsError"})
-call sign_define("LspDiagnosticsWarningSign", {"text" : "w", "texthl" : "LspDiagnosticsWarning"})
-call sign_define("LspDiagnosticsInformationSign", {"text" : "i", "texthl" : "LspDiagnosticsInformation"})
-call sign_define("LspDiagnosticsHintSign", {"text" : "H", "texthl" : "LspDiagnosticsHint"})
 
 " Always set lsp as omnifunc
 autocmd BufEnter * lua require('init').attach_lsp()
