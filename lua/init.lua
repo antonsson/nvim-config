@@ -36,8 +36,8 @@ local on_attach_lsp = function()
     map("n", "gi", ":lua vim.lsp.buf.implementation()<cr>")
     map("n", "<c-k>", ":lua vim.lsp.buf.signature_help()<cr>")
     map("n", "1gD", ":lua vim.lsp.buf.type_definition()<cr>")
-    map("n", "<leader>n", ":lua vim.lsp.diagnostic.buf_move_next_diagnostic()<cr>")
-    map("n", "<leader>p", ":lua vim.lsp.diagnostic.buf_move_prev_diagnostic()<cr>")
+    map("n", "<leader>n", ":lua vim.lsp.diagnostic.goto_next()<cr>")
+    map("n", "<leader>p", ":lua vim.lsp.diagnostic.goto_prev()<cr>")
     map("n", "<leader>i", ":lua vim.lsp.diagnostic.show_line_diagnostics()<cr>")
 end
 
