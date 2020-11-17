@@ -138,6 +138,11 @@ autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red
 autocmd InsertEnter * match ExtraWhiteSpace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhiteSpace /\s\+$/
 
+" Enter to remove search highlight or insert mode
+nnoremap <cr> :nohlsearch<cr>/<bs>
+autocmd InsertEnter * :set nohlsearch
+autocmd InsertLeave * :set hlsearch
+
 " Colorizer setup
 lua require'colorizer'.setup()
 
