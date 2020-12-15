@@ -7,25 +7,11 @@ end
 local init = {}
 
 local on_attach_lsp = function()
-    print("LSP started")
     require "completion".on_attach(
         {
             enable_auto_popup = 1,
-            auto_change_source = 1,
             matching_strategy_list = {"exact", "substring", "fuzzy"},
-            trigger_keyword_length = 2,
-            chain_complete_list = {
-                json = {
-                    {complete_items = {"path"}, triggered_only = {"/"}}
-                },
-                default = {
-                    {complete_items = {"path"}, triggered_only = {"/"}},
-                    {complete_items = {"lsp"}},
-                    {mode = "line"},
-                    {mode = "<c-n>"},
-                    {mode = "<c-p>"}
-                }
-            }
+            trigger_keyword_length = 2
         }
     )
 
@@ -64,14 +50,6 @@ nvim_lsp.kotlin_language_server.setup {
 }
 nvim_lsp.tsserver.setup {on_attach = on_attach_lsp}
 nvim_lsp.vimls.setup {on_attach = on_attach_lsp}
-
-require "nvim-treesitter.configs".setup {
-    ensure_installed = "maintained",
-    highlight = {
-        enable = true,
-        disable = {"c", "cpp", "python"} -- list of language that will be disabled
-    }
-}
 
 require "telescope".setup {
     defaults = {

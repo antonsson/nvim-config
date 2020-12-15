@@ -14,7 +14,6 @@ Plug 'joshdick/onedark.vim'
 Plug 'chuling/vim-equinusocio-material'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'tsiemens/vim-aftercolors'
-Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'bfrg/vim-cpp-modern'
 
 " git
