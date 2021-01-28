@@ -43,13 +43,21 @@ nvim_lsp.texlab.setup {on_attach = on_attach_lsp}
 nvim_lsp.jsonls.setup {on_attach = on_attach_lsp}
 nvim_lsp.html.setup {on_attach = on_attach_lsp}
 nvim_lsp.bashls.setup {on_attach = on_attach_lsp}
-nvim_lsp.kotlin_language_server.setup {
-    on_attach = on_attach_lsp,
-    cmd = {"/home/anton/programs/kotlin-lsp-server/bin/kotlin-language-server"},
-    root_dir = nvim_lsp.util.root_pattern("settings.gradle.kts")
-}
+-- nvim_lsp.kotlin_language_server.setup {
+--     on_attach = on_attach_lsp,
+--     cmd = {"/home/anton/programs/kotlin-lsp-server/bin/kotlin-language-server"},
+--     root_dir = nvim_lsp.util.root_pattern("settings.gradle.kts")
+-- }
 nvim_lsp.tsserver.setup {on_attach = on_attach_lsp}
 nvim_lsp.vimls.setup {on_attach = on_attach_lsp}
+
+require'nvim-treesitter.configs'.setup {
+    ensure_installed = "kotlin", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+    highlight = {
+        enable = true,              -- false will disable the whole extension
+        disable = { "c", "rust" },  -- list of language that will be disabled
+    },
+}
 
 require "telescope".setup {
     defaults = {

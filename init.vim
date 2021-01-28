@@ -4,12 +4,12 @@ call plug#begin(stdpath('data') . '/plugged')
 
 " Pimped status line
 Plug 'itchyny/lightline.vim'
+Plug 'spywhere/lightline-lsp'
 
 " Toggle quick/location list
 Plug 'milkypostman/vim-togglelist'
 
 " Color scheme and highlighter
-Plug 'sainnhe/sonokai'
 Plug 'joshdick/onedark.vim'
 Plug 'chuling/vim-equinusocio-material'
 Plug 'norcalli/nvim-colorizer.lua'
@@ -29,6 +29,9 @@ Plug 'udalov/kotlin-vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'gburca/vim-logcat'
 Plug 'keith/swift.vim'
+
+" Treesitter
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Neovim bultin lsp
 Plug 'neovim/nvim-lsp'
@@ -58,12 +61,11 @@ endif
 let g:equinusocio_material_style = 'darker'
 "colorscheme equinusocio_material
 
-let g:sonokai_style = 'andromeda'
-let g:sonokai_transparent_background = 1
-"colorscheme sonokai
-
-let g:onedark_color_overrides = { "black": {"gui": "#181818", "cterm": "235", "cterm16": "0" } }
+let g:onedark_color_overrides = { "black": {"gui": "#121212", "cterm": "235", "cterm16": "0" } }
 colorscheme onedark
+
+" Disable colorscheme background
+" autocmd ColorScheme * highlight Normal ctermbg=NONE guibg=NONE
 
 let mapleader = ','
 syntax on
@@ -182,7 +184,10 @@ let g:lightline = {
       \ 'colorscheme': 'onedark',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
+      \             [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ],
+      \   'right': [['lineinfo'], ['percent'],
+      \             ['linter_errors', 'linter_warnings',],
+      \             ['fileformat', 'fileencoding', 'filetype']]
       \ },
       \ 'inactive': {
       \   'left': [ [ 'relativepath' ],
@@ -191,6 +196,22 @@ let g:lightline = {
       \ 'component_function': {
       \   'gitbranch': 'fugitive#head'
       \ }
+      \ }
+
+let g:lightline.component_expand = {
+      \  'linter_hints': 'lightline#lsp#hints',
+      \  'linter_infos': 'lightline#lsp#infos',
+      \  'linter_warnings': 'lightline#lsp#warnings',
+      \  'linter_errors': 'lightline#lsp#errors',
+      \  'linter_ok': 'lightline#lsp#ok',
+      \ }
+
+let g:lightline.component_type = {
+      \     'linter_hints': 'right',
+      \     'linter_infos': 'right',
+      \     'linter_warnings': 'warning',
+      \     'linter_errors': 'error',
+      \     'linter_ok': 'right',
       \ }
 
 " CPP
@@ -206,6 +227,9 @@ omap ö [
 omap ä ]
 xmap ö [
 xmap ä ]
+
+" Copy to clipboard
+vnoremap <leader>y "+y
 
 " Navigation
 nmap . .`[
